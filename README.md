@@ -1,2 +1,60 @@
-# CovidTracking
-Rastreio evolutivo da COVID-19 no celular, offline: sintomas por dia de doença, teste de respiração, sinais de alerta e relatório para o médico. © Rachel Ingrid P. R. Jannuzzi — todos os direitos reservados.
+# COVID Tracking
+
+**Rastreio evolutivo da COVID-19 no celular, dia a dia de doença. Funciona offline.**
+
+O paciente (ou o cuidador) registra os sintomas de cada dia, faz um teste simples de respiração e informa oxigênio e temperatura, se tiver os aparelhos. O app mostra se o quadro caminha para melhora ou piora, sinaliza quando procurar atendimento e gera um relatório em PDF para o médico, com a linha do tempo e as hipóteses a investigar.
+
+> **Não é dispositivo médico.** Não faz diagnóstico, não prescreve medicamentos e não substitui avaliação profissional. Em emergência, ligue **192 (SAMU)**.
+
+> **Restrição hídrica:** quem já tem restrição de líquidos, usa diurético ou remédio que mexe com o sal e a água do corpo deve procurar o médico imediatamente para controle de diurese e eletrólitos.
+
+## O que o app faz
+
+- **Linha do tempo única** por dia de doença (D-5 a D0 e em diante): cada dia é uma caixa colorida com os sintomas dentro; o sintoma que terminou aparece riscado no dia seguinte.
+- **Cor de trajetória:** azul (remissão), amarelo (estável), laranja (piora), vermelho (piora com sinal de alarme).
+- **Teste de respiração** com cronômetro de 6 segundos e índice de restrição inspiratória (graus 0 a 4).
+- **Termômetros** de SRAG e de hipoxemia silenciosa.
+- **Regras de encaminhamento** (ambulatório, médico no mesmo dia, hospital, emergência).
+- **Condutas do dia:** hidratação com meta por peso, caminhada, refeições, sol, exercício respiratório, medicações tomadas (só registro) e sono.
+- **Janela do autoteste** (D3 a D7) e **quarentena** (D0 a D7, prorrogada se houver febre).
+- **Aviso a contatos** das janelas de incubação, com mensagem pronta; o app não guarda nomes nem contatos.
+- **Leitura de laudos** de sangue e de tomografia de tórax por foto ou PDF, no próprio celular.
+- **Relatório PDF** para o médico e **exportação CSV** sem nome e sem e-mail, para análise (por exemplo, no Octave).
+- **Lembretes** na agenda do celular (arquivo .ics).
+
+## Privacidade
+
+Todos os dados ficam apenas no navegador do celular. Nada é enviado a servidores. O usuário pode exportar ou apagar seus dados a qualquer momento.
+
+## Como usar
+
+1. Abra o endereço do app no navegador do celular (Chrome no Android, Safari no iPhone).
+2. Na primeira abertura com internet, o app fica guardado no aparelho. Depois funciona sem internet.
+3. Para ter um ícone na tela inicial: menu do navegador › **Adicionar à tela inicial**.
+
+## Publicação no GitHub Pages
+
+1. Envie todos os arquivos desta pasta para a raiz do repositório.
+2. No repositório: **Settings › Pages › Build and deployment › Source: Deploy from a branch**, branch `main`, pasta `/ (root)`.
+3. O endereço fica `https://<seu-usuario>.github.io/<nome-do-repositorio>/`.
+4. Ao alterar qualquer arquivo, aumente a versão em `sw.js` (`VERSAO`) para os celulares baixarem a atualização.
+
+## Estrutura
+
+```
+index.html              página do app
+css/styles.css          aparência
+js/data.js              sintomas, fases, glossário
+js/engine.js            regras, escores, cores e termômetros (limiares em PARAM)
+js/ocr.js               leitura de laudos
+js/report.js            relatório PDF
+js/app.js               telas
+sw.js                   funcionamento offline
+vendor/                 bibliotecas de terceiros (OCR, PDF), com as licenças
+```
+
+## Autoria e licença
+
+© 2026 **Rachel Ingrid Pereira da Rocha Jannuzzi** · ORCID [0000-0002-0408-6302](https://orcid.org/0000-0002-0408-6302)
+
+**Todos os direitos reservados.** Uso pessoal apenas pelo endereço publicado. **Proibidas a cópia, a modificação, a redistribuição e a comercialização** sem autorização escrita da autora. Veja [LICENSE](LICENSE).

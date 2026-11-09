@@ -1,0 +1,48 @@
+COVID Tracking
+Copyright (c) 2026 Rachel Ingrid Pereira da Rocha Jannuzzi
+ORCID 0000-0002-0408-6302
+Todos os direitos reservados.
+
+LICENÇA DE USO RESTRITO — USO NÃO AUTORIZADO PARA CÓPIA OU COMERCIALIZAÇÃO
+
+1. Este software, incluindo código-fonte, modelo fisiopatológico, regras de
+   classificação, pesos, textos, telas, ícones e documentação (a "Obra"), é de
+   autoria e propriedade exclusiva de Rachel Ingrid Pereira da Rocha Jannuzzi,
+   protegido pela Lei nº 9.610/1998 (Direitos Autorais) e pela Lei nº 9.609/1998
+   (Programa de Computador).
+
+2. A disponibilização pública da Obra no GitHub tem a única finalidade de permitir
+   seu USO PESSOAL, por meio do endereço publicado pela autora. Esse uso não
+   transfere nenhum direito sobre a Obra.
+
+3. Sem autorização prévia e por escrito da autora, é PROIBIDO:
+   a) copiar, clonar, baixar para redistribuição ou espelhar a Obra, no todo ou
+      em parte;
+   b) modificar, adaptar, traduzir ou criar obras derivadas;
+   c) redistribuir, publicar, sublicenciar, vender, alugar ou ceder a Obra;
+   d) usar a Obra, ou qualquer parte dela, para fins comerciais, inclusive em
+      produtos, serviços, plataformas, clínicas, planos de saúde ou empresas;
+   e) usar as regras, os pesos ou o modelo fisiopatológico em outro software;
+   f) remover ou alterar avisos de autoria e de direitos.
+
+4. O uso dos dados gerados pela Obra em pesquisa científica exige autorização da
+   autora e aprovação prévia em Comitê de Ética em Pesquisa (CEP).
+
+5. A Obra não é dispositivo médico, não faz diagnóstico, não prescreve e não
+   substitui avaliação profissional. É fornecida "no estado em que se encontra",
+   sem garantias de qualquer tipo. A autora não se responsabiliza por decisões
+   tomadas com base nas informações exibidas.
+
+6. Pedidos de autorização devem ser feitos diretamente à autora.
+
+-------------------------------------------------------------------------------
+COMPONENTES DE TERCEIROS
+
+A pasta vendor/ contém bibliotecas de terceiros, distribuídas sob as próprias
+licenças, que NÃO são alteradas por este documento:
+
+- Tesseract.js e tesseract.js-core (Apache License 2.0)
+  vendor/tesseract/LICENSE-tesseract.js.md, vendor/tesseract/LICENSE-tesseract.js-core
+- Modelo de idioma português do Tesseract (Apache License 2.0)
+- PDF.js, Mozilla (Apache License 2.0) — vendor/pdfjs/LICENSE
+- jsPDF (MIT License) — vendor/LICENSE-jspdf
