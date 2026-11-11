@@ -254,3 +254,18 @@ function sugerirEncerramento(r) {
   if (ds.length < 3) return false;
   return ds.every(d => semSintomas(r.registros[d])) && difDias(ds[2], ds[0]) === 2;
 }
+
+/* ---------- gripe x COVID ---------- */
+function sinaisCovid(r) {
+  const vistos = new Set();
+  datasRegistradas(r).forEach(d => (r.registros[d].sint || []).forEach(id => { if (SINAIS_COVID.includes(id)) vistos.add(id); }));
+  return [...vistos];
+}
+function situacaoTeste(r) {
+  const ds = datasRegistradas(r);
+  if (ds.some(d => r.registros[d].teste === 'positivo')) return 'positivo';
+  const negs = ds.filter(d => r.registros[d].teste === 'negativo');
+  if (negs.length >= 2 && difDias(negs[negs.length - 1], negs[0]) >= 2) return 'negativos';
+  if (negs.length) return 'negativo';
+  return 'sem';
+}

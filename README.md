@@ -1,6 +1,8 @@
 # COVID Tracking
 
-**Rastreio evolutivo da COVID-19 no celular, dia a dia de doença. Funciona offline.**
+**Rastreio da gripe, dia a dia, com foco em COVID-19. Funciona offline no celular.**
+
+No início, a COVID-19 é muito parecida com uma gripe comum. Por isso, a qualquer sinal de gripe, principalmente forte ou com muita dor no corpo, a pessoa começa a registrar os sintomas. O nome *COVID Tracking* reflete o objetivo: juntar os sinais que apontam para COVID e para um quadro grave, e avisar a tempo de fazer o autoteste e de procurar o médico.
 
 O paciente (ou o cuidador) registra os sintomas de cada dia, faz um teste simples de respiração e informa oxigênio e temperatura, se tiver os aparelhos. O app mostra se o quadro caminha para melhora ou piora, sinaliza quando procurar atendimento e gera um relatório em PDF para o médico, com a linha do tempo e as hipóteses a investigar.
 
@@ -21,10 +23,16 @@ O paciente (ou o cuidador) registra os sintomas de cada dia, faz um teste simple
 - **Leitura de laudos** de sangue e de tomografia de tórax por foto ou PDF, no próprio celular.
 - **Relatório PDF** para o médico e **exportação CSV** sem nome e sem e-mail, para análise (por exemplo, no Octave).
 - **Lembretes** na agenda do celular (arquivo .ics).
+- **Sinais que apontam para COVID** e interpretação dos autotestes (positivo, ou dois negativos com 48 h de intervalo).
+- **Vacinação contra COVID** por dose (5 perguntas: Pfizer, CoronaVac, AstraZeneca, Janssen, Moderna, Sputnik V, outra, nenhuma ou não sei).
+
+## Pesquisa científica
+
+Na abertura, o app apresenta um termo de consentimento **opcional** para uso dos dados em pesquisa. Quem autoriza pode tocar em **Enviar dados para a pesquisa** (em "Mais" ou ao encerrar o rastreio): o celular compartilha duas planilhas CSV, sem nome e sem e-mail, identificadas apenas por um código aleatório, para o e-mail da pesquisa. A autorização pode ser retirada a qualquer momento. O uso dos dados depende de aprovação do projeto em Comitê de Ética em Pesquisa (CEP).
 
 ## Privacidade
 
-Todos os dados ficam apenas no navegador do celular. Nada é enviado a servidores. O usuário pode exportar ou apagar seus dados a qualquer momento.
+Todos os dados ficam apenas no navegador do celular. Nada é enviado a servidores; os dados só saem do aparelho quando o próprio usuário toca em "Enviar". O usuário pode exportar ou apagar seus dados a qualquer momento.
 
 ## Como usar
 

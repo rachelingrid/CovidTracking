@@ -42,6 +42,7 @@ function ir(view, extra) {
 
 function render() {
   if (!DB.aceite) return vAviso();
+  if (DB.pesquisa == null) return vPesquisa();
   const r = R();
   if (!r || UI.view === 'cadastro') return vCadastro(UI.editando ? r : null);
   const v = UI.view || 'inicio';
@@ -63,28 +64,66 @@ function vAviso() {
   semAbas();
   app().innerHTML = `
   <h1>COVID Tracking</h1>
-  <p class="sub">Rastreio evolutivo da COVID-19, dia a dia, no seu celular.</p>
+  <p class="sub">Rastreio da gripe, dia a dia, com foco em COVID-19.</p>
+  <div class="card">
+    <h3 style="margin-top:0">Começou com sintomas de gripe? Comece a registrar.</h3>
+    <p>No início, a COVID-19 é muito parecida com uma gripe comum. Por isso, a qualquer sinal de gripe, principalmente se estiver forte ou com muita dor no corpo, comece o monitoramento anotando seus sintomas todos os dias.</p>
+    <p><b>Por que o nome COVID Tracking?</b> O objetivo é juntar os sinais e sintomas que apontam para COVID e para um quadro grave, e avisar você a tempo de:</p>
+    <ul class="l">
+      <li>fazer o autoteste no momento certo;</li>
+      <li>procurar o médico quando for preciso;</li>
+      <li>levar ao médico um relatório com tudo o que aconteceu desde o primeiro dia.</li>
+    </ul>
+  </div>
   <div class="banner red"><b>Restrição hídrica</b>Se você já tem restrição de líquidos por qualquer motivo, procure seu médico imediatamente para controle rigoroso da urina e dos sais do sangue (eletrólitos).</div>
   <div class="card">
-    <h3>Como funciona</h3>
-    <ul class="l">
-      <li>Você marca os sintomas de cada dia e faz um teste simples de respiração.</li>
-      <li>O app mostra se o quadro caminha para melhora ou piora e quando procurar atendimento.</li>
-      <li>Quando for ao médico, o app gera um relatório com a linha do tempo e hipóteses a investigar.</li>
-    </ul>
-    <h3>O que o app não faz</h3>
+    <h3 style="margin-top:0">O que o app não faz</h3>
     <ul class="l">
       <li>Não faz diagnóstico, não prescreve medicamentos e não substitui consulta médica.</li>
       <li>Em emergência, ligue <b>192 (SAMU)</b> ou vá ao pronto-socorro.</li>
     </ul>
     <h3>Seus dados</h3>
-    <p class="sub">Tudo fica guardado apenas neste celular. Nada é enviado para servidores. Você pode exportar ou apagar seus dados quando quiser.</p>
+    <p class="sub">Tudo fica guardado apenas neste celular. Nada sai do aparelho sem você tocar em "Enviar". Você pode exportar ou apagar seus dados quando quiser.</p>
   </div>
   <label class="opt"><input type="checkbox" id="ok"> Li e concordo. Entendo que dados de saúde são dados sensíveis e autorizo guardá-los neste aparelho (LGPD).</label>
-  <button class="pri full" id="seg" disabled style="margin-top:12px">Começar</button>
+  <button class="pri full" id="seg" disabled style="margin-top:12px">Continuar</button>
   <p class="foot">© 2026 Rachel Ingrid Pereira da Rocha Jannuzzi · Todos os direitos reservados</p>`;
   $('#ok').onchange = e => { $('#seg').disabled = !e.target.checked; };
-  $('#seg').onclick = () => { DB.aceite = true; salvar(); ir('cadastro'); };
+  $('#seg').onclick = () => { DB.aceite = true; salvar(); ir(DB.pesquisa == null ? null : 'cadastro'); };
+}
+
+/* ================= termo de consentimento para pesquisa (opcional) ================= */
+function textoTermo() {
+  return `
+    <p>Os registros feitos neste app podem ajudar a entender como a gripe e a COVID-19 evoluem e quais sinais anunciam um quadro grave.</p>
+    <p><b>Pesquisadora responsável:</b> ${PESQUISA.pesquisadora}. Contato: ${PESQUISA.email}.</p>
+    <ul class="l">
+      <li><b>Participar é opcional.</b> O app funciona igual se você não autorizar.</li>
+      <li><b>O que é usado:</b> idade, sexo, peso, doenças prévias, vacinação, sintomas por dia, medidas, teste de respiração, condutas e exames registrados.</li>
+      <li><b>O que não é enviado:</b> nome, e-mail e qualquer dado das pessoas que você avisou. Cada rastreio recebe um código aleatório.</li>
+      <li><b>Como os dados chegam à pesquisadora:</b> só quando você tocar em "Enviar dados para a pesquisa", por e-mail ou outro aplicativo que você escolher.</li>
+      <li><b>Uso:</b> apenas pesquisa científica, em projeto aprovado por Comitê de Ética em Pesquisa (CEP). Resultados são publicados só em conjunto, sem identificar ninguém.</li>
+      <li><b>Você pode desistir</b> a qualquer momento, sem prejuízo, em "Mais › Pesquisa". Para retirar dados já enviados, escreva para ${PESQUISA.email} informando o código do rastreio.</li>
+      <li><b>Riscos e benefícios:</b> não há procedimento físico; o risco é o de exposição de dados, reduzido por não enviar nome nem e-mail. Não há pagamento nem custo.</li>
+    </ul>
+    <p class="sub">Termo versão ${PESQUISA.versaoTermo}.</p>`;
+}
+function vPesquisa(voltarPara) {
+  semAbas();
+  app().innerHTML = `
+  <h1>Pesquisa científica</h1>
+  <p class="sub">Termo de consentimento livre e esclarecido · leia com calma</p>
+  <div class="card">${textoTermo()}</div>
+  <p><b>Você autoriza o uso dos seus dados, sem nome e sem e-mail, em pesquisa científica?</b></p>
+  <button class="pri full" id="sim">Sim, autorizo</button>
+  <button class="full" id="nao" style="margin-top:8px">Não autorizo</button>`;
+  const fim = v => {
+    DB.pesquisa = v; DB.pesquisaData = new Date().toISOString(); DB.pesquisaTermo = PESQUISA.versaoTermo; salvar();
+    toast(v ? 'Obrigada! Autorização registrada.' : 'Tudo bem. O app funciona normalmente.');
+    if (voltarPara) ir(voltarPara); else ir(R() ? 'inicio' : 'cadastro');
+  };
+  $('#sim').onclick = () => fim(true);
+  $('#nao').onclick = () => fim(false);
 }
 
 /* ================= cadastro ================= */
@@ -117,11 +156,23 @@ function vCadastro(r) {
 
     <label>Doenças que já tem</label>
     <div class="card" style="padding:4px 14px">${COMORBIDADES.map(([k, l]) => `<label class="opt"><input type="checkbox" name="com" value="${k}" ${(v.comorb || []).includes(k) ? 'checked' : ''}> ${l}</label>`).join('')}</div>
-    <label for="vacina">Vacinação contra COVID</label>
-    <select id="vacina">${['Não sei', 'Nenhuma dose', '1 ou 2 doses', '3 ou mais doses', 'Reforço no último ano'].map(s => `<option ${v.vacina === s ? 'selected' : ''}>${s}</option>`).join('')}</select>
+    <h2>Vacinação contra COVID</h2>
+    <p class="sub">Responda uma pergunta por dose. Se não lembrar, escolha "Não sei". O nome da vacina costuma estar no cartão de vacina ou no app Meu SUS Digital.</p>
+    <div class="card" id="vacs">${ORDINAIS.map((o, i) => {
+      const val = (v.vacinas || [])[i] || '';
+      const base = val.startsWith('Outra: ') ? 'Outra' : val;
+      return `<div class="vac" data-i="${i}">
+        <label for="vac${i}">Qual foi a ${o} dose de vacina contra COVID que ${v.para === 'terceiro' ? 'a pessoa tomou' : 'você tomou'}?</label>
+        <select id="vac${i}"><option value="">Selecione</option>${VACINAS.map(x => `<option ${base === x ? 'selected' : ''}>${x}</option>`).join('')}</select>
+        <input id="vacout${i}" placeholder="Qual vacina?" maxlength="40" value="${esc(val.startsWith('Outra: ') ? val.slice(7) : '')}" ${base === 'Outra' ? '' : 'hidden'} style="margin-top:6px">
+      </div>`; }).join('')}
+      <label for="vacmais">Tomou mais de 5 doses? Quantas no total? (opcional)</label>
+      <input id="vacmais" type="number" inputmode="numeric" min="6" max="20" value="${esc(v.vacinasTotal)}">
+    </div>
 
     <h2>Âncoras de tempo</h2>
-    <label for="d0">Dia em que os sintomas começaram (D0)</label>
+    <label for="d0">Dia em que os sintomas de gripe começaram (D0)</label>
+    <p class="sub" style="margin:0 0 4px">Febre, dor no corpo, garganta, nariz escorrendo ou ardendo: conte do primeiro sintoma.</p>
     <input id="d0" type="date" required max="${hoje}" value="${esc(v.d0 || hoje)}">
     <label for="dc">Dia do contato com alguém doente (se souber)</label>
     <input id="dc" type="date" max="${hoje}" value="${esc(v.dataContato)}">
@@ -135,16 +186,29 @@ function vCadastro(r) {
     $('#lnome').textContent = para === 'terceiro' ? 'Nome da pessoa acompanhada' : 'Seu nome ou apelido'; };
   $('#restr').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; restr = b.dataset.v === '1';
     $('#restr').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+  const ajustaVac = () => {
+    let nenhuma = false;
+    ORDINAIS.forEach((_, i) => {
+      const sel = $('#vac' + i);
+      if (nenhuma) { sel.value = 'Nenhuma'; sel.disabled = true; } else sel.disabled = false;
+      $('#vacout' + i).hidden = sel.value !== 'Outra';
+      if (sel.value === 'Nenhuma') nenhuma = true;
+    });
+  };
+  $('#vacs').onchange = ajustaVac; ajustaVac();
   const c = $('#canc'); if (c) c.onclick = () => { if (!DB.ativo) DB.ativo = Object.keys(DB.rastreios)[0]; ir('inicio', { editando: false }); };
   $('#f').onsubmit = e => {
     e.preventDefault();
+    const vacinas = ORDINAIS.map((_, i) => { const x = $('#vac' + i).value; return x === 'Outra' ? 'Outra: ' + ($('#vacout' + i).value.trim() || 'não informada') : x; });
+    const faltaVac = vacinas.findIndex(x => !x);
+    if (faltaVac >= 0) { const er = $('#erro'); er.hidden = false; er.textContent = 'Responda à pergunta da ' + ORDINAIS[faltaVac] + ' dose de vacina (se não lembrar, escolha "Não sei").'; er.scrollIntoView({ block: 'center' }); return; }
     if (restr == null) { const er = $('#erro'); er.hidden = false; er.textContent = 'Responda à pergunta sobre diurético e remédios que mexem com sal e água.'; er.scrollIntoView({ block: 'center' }); return; }
-    const novo = r || { id: 'r' + Date.now().toString(36), criado: new Date().toISOString(), registros: {}, exames: [], contatos: { avisados: 0, risco: 0 } };
+    const novo = r || { id: 'CT-' + Math.random().toString(36).slice(2, 8).toUpperCase(), criado: new Date().toISOString(), registros: {}, exames: [], contatos: { avisados: 0, risco: 0 } };
     Object.assign(novo, {
       para, nome: $('#nome').value.trim(), email: $('#email').value.trim(), idade: Number($('#idade').value),
       sexo: $('#sexo').value, peso: Number($('#peso').value), altura: $('#altura').value ? Number($('#altura').value) : null,
       restricao: restr, comorb: [...document.querySelectorAll('input[name=com]:checked')].map(x => x.value),
-      vacina: $('#vacina').value, d0: $('#d0').value, dataContato: $('#dc').value || null
+      vacinas, vacinasTotal: $('#vacmais').value ? Number($('#vacmais').value) : null, d0: $('#d0').value, dataContato: $('#dc').value || null
     });
     DB.rastreios[novo.id] = novo; DB.ativo = novo.id; salvar();
     if (restr && !r) ir('restricao', { editando: false }); else ir('inicio', { editando: false });
@@ -188,6 +252,7 @@ function vInicio(r) {
   }
   const fase = reg ? faseProvavel(reg) : null;
   const teste = r.encerrado ? null : avisoTeste(r, dh);
+  const covid = blocoGripeCovid(r);
   const fq = fimQuarentena(r);
   const quar = !r.encerrado && dh <= fq ? `<div class="banner info"><b>Quarentena até ${rotuloDia(fq)} (${dataCurta(somaDias(r.d0, fq))})</b>Possível período de replicação viral: evite contato próximo e use máscara perto de outras pessoas.${fq > 7 ? ' Prorrogada porque houve febre.' : ''}</div>` : '';
   const sug = !r.encerrado && sugerirEncerramento(r);
@@ -198,6 +263,7 @@ function vInicio(r) {
   ${r.restricao ? '<div class="banner red"><b>Restrição hídrica / diurético</b>Mantenha acompanhamento médico para controle da urina e dos eletrólitos.</div>' : ''}
   ${status}
   ${fase ? `<p class="sub"><b>Fase provável:</b> ${fase.nome}. ${fase.leigo}</p>` : ''}
+  ${covid}
   ${teste ? `<div class="banner info"><b>🔔 Autoteste</b>${esc(teste)}</div>` : ''}
   ${quar}
   <h2>Linha do tempo</h2>
@@ -339,12 +405,21 @@ async function gerarRelatorio(r) {
   } catch (e) { console.error(e); toast('Erro ao gerar o relatório'); }
 }
 
+function blocoGripeCovid(r) {
+  const st = situacaoTeste(r);
+  const sc = sinaisCovid(r).map(id => SINT[id].leigo.toLowerCase());
+  if (st === 'positivo') return `<div class="banner warn"><b>COVID confirmada pelo autoteste</b>Continue registrando todos os dias. Fique atento à fase de sede e urina escura e aos sinais de alerta.</div>`;
+  if (st === 'negativos') return `<div class="banner info"><b>Dois autotestes negativos</b>Pode ser outra virose. Continue registrando: os sinais de alerta valem para qualquer gripe forte.${sc.length ? ' Como há sinais que lembram COVID, comente com o médico.' : ''}</div>`;
+  if (sc.length) return `<div class="banner warn"><b>Sinais que apontam para COVID</b>Você registrou: ${esc(sc.join('; '))}. Faça o autoteste na janela certa (D3 a D7).</div>`;
+  return `<p class="sub"><b>Gripe ou COVID?</b> No começo são parecidas. Registrando todo dia, o app junta os sinais que apontam para COVID e para gravidade.</p>`;
+}
+
 function encerrar(r) {
   modal(`<h3 style="margin-top:0">Encerrar o rastreio?</h3>
     <p>Mesmo casos leves podem deixar sequelas. Muitas pessoas evoluem com COVID longa, inclusive sem ter tido sintomas fortes.</p>
     <p>Se surgir cansaço persistente, falta de ar, palpitação, alteração de memória, de concentração ou de sono nas próximas semanas, reabra o rastreio em "Mais" e procure seu médico.</p>
     <div class="grid2"><button data-fechar>Voltar</button><button class="pri" id="sim">Encerrar</button></div>`,
-    m => { m.querySelector('#sim').onclick = () => { r.encerrado = hojeISO(); salvar(); m.remove(); ir('inicio'); }; });
+    m => { m.querySelector('#sim').onclick = () => { r.encerrado = hojeISO(); salvar(); m.remove(); ir('inicio'); if (DB.pesquisa) convitePesquisa(r); }; });
 }
 
 /* ================= registrar ================= */
@@ -594,6 +669,14 @@ function vMais(r) {
     <p><b>Termômetro de SRAG</b> soma falta de ar, dificuldade de encher o pulmão, tosse, teste de respiração e oxigênio.</p>
     <p><b>Hipoxemia silenciosa</b> aparece quando o oxigênio cai sem falta de ar, principalmente na primeira semana.</p></div></details>
 
+  <h2>Pesquisa científica</h2>
+  <div class="card">
+    <p style="margin-top:0">Autorização: <b>${DB.pesquisa ? 'autorizada' : 'não autorizada'}</b>${DB.pesquisaData ? ' em ' + dataBR(DB.pesquisaData.slice(0, 10)) : ''}</p>
+    <p class="sub">Código deste rastreio: <b>${esc(r.id)}</b>${r.pesquisaEnviado ? ' · último envio em ' + dataBR(r.pesquisaEnviado.slice(0, 10)) : ''}</p>
+    ${DB.pesquisa ? '<button class="pri full" id="envp">📤 Enviar dados para a pesquisa</button>' : ''}
+    <div class="grid2" style="margin-top:8px"><button id="termo">Ler o termo</button><button id="mudap">${DB.pesquisa ? 'Retirar autorização' : 'Autorizar'}</button></div>
+  </div>
+
   <h2>Dados</h2>
   <p class="sub">Exporta tabelas sem nome e sem e-mail, para análise (por exemplo, no Octave).</p>
   <div class="grid2"><button id="csv1">⬇️ Registros (CSV)</button><button id="csv2">⬇️ Exames (CSV)</button></div>
@@ -601,13 +684,21 @@ function vMais(r) {
   <button class="full danger" id="apagar" style="margin-top:8px">🗑️ Apagar este rastreio</button>
 
   <h2>Sobre</h2>
-  <p class="sub">COVID Tracking · rastreio evolutivo da COVID-19. Não faz diagnóstico, não prescreve e não substitui avaliação médica. Em emergência, ligue 192.</p>
+  <p class="sub">COVID Tracking · rastreio da gripe com foco em COVID-19. Não faz diagnóstico, não prescreve e não substitui avaliação médica. Em emergência, ligue 192.</p>
   <p class="sub">© 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. Proibidas a cópia, a redistribuição e o uso comercial sem autorização escrita da autora.</p>
-  <p class="foot">Versão 1.0</p>`;
+  <p class="foot">Versão ${VERSAO_APP}</p>`;
   document.querySelectorAll('[data-at]').forEach(b => b.onclick = () => { DB.ativo = b.dataset.at; salvar(); ir('inicio'); });
   $('#novo').onclick = () => { DB.ativo = null; ir('cadastro', { editando: false }); };
   $('#edit').onclick = () => ir('cadastro', { editando: true });
   $('#ics').onclick = () => { r.horaLembrete = $('#hl').value || '20:00'; salvar(); baixar(icsLembretes(r), 'lembretes-covid-tracking.ics', 'text/calendar'); };
+  if ($('#envp')) $('#envp').onclick = () => enviarPesquisa(r);
+  $('#termo').onclick = () => modal('<h3 style="margin-top:0">Termo de consentimento</h3>' + textoTermo() + '<button class="full" data-fechar>Fechar</button>');
+  $('#mudap').onclick = () => {
+    if (DB.pesquisa) {
+      if (!confirm('Retirar a autorização? Novos dados não serão enviados. Para retirar dados já enviados, escreva para ' + PESQUISA.email + ' com o código ' + r.id + '.')) return;
+      DB.pesquisa = false; DB.pesquisaData = new Date().toISOString(); salvar(); render();
+    } else vPesquisa('mais');
+  };
   $('#csv1').onclick = () => baixar(csvRegistros(r), 'covidtracking-registros-' + r.id + '.csv', 'text/csv');
   $('#csv2').onclick = () => baixar(csvExames(r), 'covidtracking-exames-' + r.id + '.csv', 'text/csv');
   $('#enc').onclick = () => { if (r.encerrado) { delete r.encerrado; salvar(); ir('inicio'); } else encerrar(r); };
@@ -617,6 +708,43 @@ function vMais(r) {
   };
 }
 
+function convitePesquisa(r) {
+  modal(`<h3 style="margin-top:0">Enviar seus dados para a pesquisa?</h3>
+    <p>Você autorizou o uso dos seus dados em pesquisa. Enviar agora ajuda a entender como a gripe e a COVID evoluem.</p>
+    <p class="sub">Vão só as tabelas, sem nome e sem e-mail. Código: <b>${esc(r.id)}</b>.</p>
+    <div class="grid2"><button data-fechar>Agora não</button><button class="pri" id="envm">📤 Enviar</button></div>`,
+    m => { m.querySelector('#envm').onclick = () => { m.remove(); enviarPesquisa(r); }; });
+}
+async function enviarPesquisa(r) {
+  if (!DB.pesquisa) return toast('A autorização para pesquisa não foi dada.');
+  if (!datasRegistradas(r).length) return toast('Faça pelo menos um registro antes de enviar.');
+  const assunto = 'COVID Tracking - dados de pesquisa - ' + r.id;
+  const corpo = 'Dados de pesquisa do rastreio ' + r.id + ' (termo v' + PESQUISA.versaoTermo + ', app v' + VERSAO_APP + ').';
+  const f1 = new File([csvRegistros(r)], 'covidtracking-' + r.id + '-registros.csv', { type: 'text/csv' });
+  const f2 = new File([csvExames(r)], 'covidtracking-' + r.id + '-exames.csv', { type: 'text/csv' });
+  const marca = () => { r.pesquisaEnviado = new Date().toISOString(); salvar(); };
+  modal(`<h3 style="margin-top:0">Enviar para a pesquisa</h3>
+    <p>1. Toque em <b>Enviar</b> e escolha o <b>Gmail</b> ou outro app de e-mail.</p>
+    <p>2. No destinatário, coloque:</p>
+    <div class="msg row" style="justify-content:space-between"><b>${PESQUISA.email}</b><button id="cpe" style="padding:6px 10px">Copiar</button></div>
+    <p>3. Confira se as duas planilhas estão anexadas e envie.</p>
+    <div class="grid2" style="margin-top:12px"><button data-fechar>Cancelar</button><button class="pri" id="go">📤 Enviar</button></div>`, m => {
+    m.querySelector('#cpe').onclick = async () => { try { await navigator.clipboard.writeText(PESQUISA.email); toast('E-mail copiado'); } catch (e) {} };
+    m.querySelector('#go').onclick = async () => {
+      try { await navigator.clipboard.writeText(PESQUISA.email); } catch (e) {}
+      if (navigator.canShare && navigator.canShare({ files: [f1, f2] })) {
+        try { await navigator.share({ files: [f1, f2], title: assunto, text: corpo + ' Enviar para ' + PESQUISA.email }); marca(); m.remove(); toast('Obrigada por contribuir com a pesquisa!'); return; }
+        catch (e) { if (e.name === 'AbortError') return; }
+      }
+      // Sem compartilhamento de arquivos (ex.: computador): baixa as planilhas e abre o e-mail para anexar
+      baixar(csvRegistros(r), f1.name, 'text/csv');
+      setTimeout(() => baixar(csvExames(r), f2.name, 'text/csv'), 400);
+      setTimeout(() => { location.href = 'mailto:' + PESQUISA.email + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo + '\n\nAnexe os dois arquivos .csv que acabaram de ser baixados.'); }, 900);
+      marca(); m.remove();
+    };
+  });
+}
+
 function baixar(conteudo, nome, tipo) {
   const blob = new Blob([conteudo], { type: tipo + ';charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome;
@@ -624,13 +752,13 @@ function baixar(conteudo, nome, tipo) {
 }
 const csvCel = v => { const s = v == null ? '' : String(v); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
 function csvRegistros(r) {
-  const cab = ['id_rastreio', 'dia', 'data', 'idade', 'sexo', 'peso', 'restricao_hidrica', 'comorbidades', 'vacina', 'cor', 'escore', 'nivel_regra', 'regras',
+  const cab = ['id_rastreio', 'dia', 'data', 'idade', 'sexo', 'peso', 'restricao_hidrica', 'comorbidades', 'vac_d1', 'vac_d2', 'vac_d3', 'vac_d4', 'vac_d5', 'vac_total', 'd0', 'consentimento_pesquisa', 'versao_app', 'cor', 'escore', 'nivel_regra', 'regras',
     'fase_max', 'resp_grau', 'resp_motivo', 'spo2', 'spo2_primeira', 'temp', 'fc', 'autoteste', 'srag_nivel', 'hipox_nivel',
     ...SINTOMAS.map(s => 's_' + s.id), 'agua_L', 'meta_agua_L', 'caminhadas', 'refeicoes', 'sol', 'exerc_resp', 'sono_h', 'medicacoes', 'contatos_avisados', 'contatos_risco'];
   const lin = datasRegistradas(r).map(d => {
     const g = r.registros[d], s = conjunto(g), c = g.cond || {}, av = avaliarRegras(r, d), dia = diaDoenca(r, d);
     const meta = metaHidratacao(r, g);
-    return [r.id, dia, d, r.idade, r.sexo, r.peso, r.restricao ? 1 : 0, (r.comorb || []).join('|'), r.vacina, corDia(r, d), escoreDia(g), av.nivel,
+    return [r.id, dia, d, r.idade, r.sexo, r.peso, r.restricao ? 1 : 0, (r.comorb || []).join('|'), ...[0, 1, 2, 3, 4].map(i => (r.vacinas || [])[i] || (i === 0 ? r.vacina || '' : '')), r.vacinasTotal, r.d0, DB.pesquisa ? 1 : 0, VERSAO_APP, corDia(r, d), escoreDia(g), av.nivel,
       av.regras.map(x => x.id).join('|'), faseMaxima(g), g.resp ? g.resp.g : '', g.resp ? g.resp.motivo || '' : '', g.spo2, g.spo2Primeira, g.temp, g.fc, g.teste || '',
       termometroSRAG(g).nivel, termometroHipoxemia(g, dia).nivel, ...SINTOMAS.map(x => s.has(x.id) ? 1 : 0),
       c.agua, meta ? (meta / 1000).toFixed(2) : '', c.cam, c.ref, c.sol, c.exr, c.sono, c.med, (r.contatos || {}).avisados, (r.contatos || {}).risco].map(csvCel).join(';');

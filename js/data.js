@@ -119,3 +119,22 @@ const COR = {
   cinza:    { bg: '#D3D1C7', fg: '#444441', nome: 'Cinza', sig: 'antes dos sintomas' }
 };
 const NIVEL_ORDEM = ['azul', 'amarelo', 'laranja', 'vermelho'];
+
+/* ---------- vacinação (5 doses) ---------- */
+const VACINAS = ['Não sei', 'Nenhuma', 'Pfizer (Comirnaty)', 'CoronaVac (Butantan)', 'AstraZeneca (Fiocruz)', 'Janssen', 'Moderna', 'Sputnik V', 'Outra'];
+const ORDINAIS = ['primeira', 'segunda', 'terceira', 'quarta', 'quinta'];
+function textoVacinas(r) {
+  if (Array.isArray(r.vacinas)) return r.vacinas.map((v, i) => (i + 1) + 'ª ' + (v || '-')).join(' · ');
+  return r.vacina || 'não informada';
+}
+
+/* ---------- sinais que apontam para COVID (mais que para outras gripes) ---------- */
+const SINAIS_COVID = ['anosmia', 'sede', 'urina_esc', 'parest', 'queim_pp', 'prurido', 'conjunt', 'ard_naso'];
+
+/* ---------- pesquisa ---------- */
+const PESQUISA = {
+  email: 'th.inova.care@gmail.com',
+  pesquisadora: 'Rachel Ingrid Pereira da Rocha Jannuzzi',
+  versaoTermo: '1.0'
+};
+const VERSAO_APP = '1.1.0';

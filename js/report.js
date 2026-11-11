@@ -34,7 +34,7 @@ const Relatorio = (() => {
     const av = avaliarRegras(r, iso);
     const agora = new Date();
 
-    texto('COVID Tracking — Relatório de encaminhamento', { b: true, s: 16 });
+    texto('COVID Tracking — Relatório de encaminhamento (rastreio de gripe com foco em COVID-19)', { b: true, s: 16 });
     texto('Gerado em ' + agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) +
       ' · referente a ' + dataBR(iso) + ' (' + rotuloDia(diaDoenca(r, iso)) + ')', { s: 9, c: [90, 90, 90] });
 
@@ -46,9 +46,10 @@ const Relatorio = (() => {
     const com = (r.comorb || []).map(k => (COMORBIDADES.find(c => c[0] === k) || [k, k])[1]);
     item('Paciente: ' + (r.nome || '-') + (r.para === 'terceiro' ? ' (rastreio feito por cuidador)' : '') +
       ' · ' + (r.idade || '-') + ' anos · ' + (r.sexo || '-') + ' · ' + (r.peso || '-') + ' kg · ' + (r.altura || '-') + ' cm');
-    item('Comorbidades: ' + (com.length ? com.join(', ') : 'nenhuma informada') + ' · Vacinação: ' + (r.vacina || 'não informada'));
+    item('Comorbidades: ' + (com.length ? com.join(', ') : 'nenhuma informada'));
+    item('Vacinação contra COVID: ' + textoVacinas(r) + (r.vacinasTotal ? ' · total de ' + r.vacinasTotal + ' doses' : ''));
     item('Uso de diurético, mineralocorticoide ou restrição hídrica: ' + (r.restricao ? 'SIM' : 'não'));
-    item('Início dos sintomas (D0): ' + dataBR(r.d0) + (r.dataContato ? ' · contato provável: ' + dataBR(r.dataContato) : ''));
+    item('Início dos sintomas gripais (D0): ' + dataBR(r.d0) + (r.dataContato ? ' · contato provável: ' + dataBR(r.dataContato) : ''));
     const testes = datas.filter(d => r.registros[d].teste && r.registros[d].teste !== 'nao').map(d => rotuloDia(diaDoenca(r, d)) + ' ' + r.registros[d].teste);
     item('Autoteste: ' + (testes.length ? testes.join('; ') : 'não registrado'));
     if (r.email) item('Contato: ' + r.email);
