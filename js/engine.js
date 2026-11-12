@@ -1,4 +1,4 @@
-/* COVID Tracking — motor de regras (escores, cor de trajetória, termômetros, encaminhamento).
+/* Gripetracking — motor de regras (escores, cor de trajetória, termômetros, encaminhamento).
    Os limiares estão reunidos em PARAM para calibração com os dados coletados.
    © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. */
 'use strict';

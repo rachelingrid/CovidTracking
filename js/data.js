@@ -1,4 +1,4 @@
-/* COVID Tracking — dados de referência (sintomas, fases, glossário, textos).
+/* Gripetracking — dados de referência (sintomas, fases, glossário, textos).
    © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. */
 'use strict';
 
@@ -137,4 +137,4 @@ const PESQUISA = {
   pesquisadora: 'Rachel Ingrid Pereira da Rocha Jannuzzi',
   versaoTermo: '1.0'
 };
-const VERSAO_APP = '1.1.0';
+const VERSAO_APP = '1.2.0';

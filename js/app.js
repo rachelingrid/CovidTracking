@@ -1,9 +1,9 @@
-/* COVID Tracking — interface.
+/* Gripetracking — interface.
    © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. */
 'use strict';
 
 /* ================= armazenamento (só no celular) ================= */
-const CHAVE = 'covidtracking.v1';
+const CHAVE = 'covidtracking.v1'; // chave mantida para preservar dados de quem já usava o app
 let DB = carregar();
 function carregar() {
   try { return JSON.parse(localStorage.getItem(CHAVE)) || { aceite: false, ativo: null, rastreios: {} }; }
@@ -63,12 +63,12 @@ function semAbas() { const n = document.querySelector('nav.tabs'); if (n) n.remo
 function vAviso() {
   semAbas();
   app().innerHTML = `
-  <h1>COVID Tracking</h1>
-  <p class="sub">Rastreio da gripe, dia a dia, com foco em COVID-19.</p>
+  <h1>Gripetracking</h1>
+  <p class="sub">Rastreio de síndrome gripal, dia a dia, com foco em COVID-19.</p>
   <div class="card">
     <h3 style="margin-top:0">Começou com sintomas de gripe? Comece a registrar.</h3>
     <p>No início, a COVID-19 é muito parecida com uma gripe comum. Por isso, a qualquer sinal de gripe, principalmente se estiver forte ou com muita dor no corpo, comece o monitoramento anotando seus sintomas todos os dias.</p>
-    <p><b>Por que o nome COVID Tracking?</b> O objetivo é juntar os sinais e sintomas que apontam para COVID e para um quadro grave, e avisar você a tempo de:</p>
+    <p><b>Por que o foco em COVID?</b> Porque é a virose respiratória que mais engana no começo e que mais deixa sequelas. O objetivo é juntar os sinais e sintomas que apontam para COVID e para um quadro grave, e avisar você a tempo de:</p>
     <ul class="l">
       <li>fazer o autoteste no momento certo;</li>
       <li>procurar o médico quando for preciso;</li>
@@ -203,7 +203,7 @@ function vCadastro(r) {
     const faltaVac = vacinas.findIndex(x => !x);
     if (faltaVac >= 0) { const er = $('#erro'); er.hidden = false; er.textContent = 'Responda à pergunta da ' + ORDINAIS[faltaVac] + ' dose de vacina (se não lembrar, escolha "Não sei").'; er.scrollIntoView({ block: 'center' }); return; }
     if (restr == null) { const er = $('#erro'); er.hidden = false; er.textContent = 'Responda à pergunta sobre diurético e remédios que mexem com sal e água.'; er.scrollIntoView({ block: 'center' }); return; }
-    const novo = r || { id: 'CT-' + Math.random().toString(36).slice(2, 8).toUpperCase(), criado: new Date().toISOString(), registros: {}, exames: [], contatos: { avisados: 0, risco: 0 } };
+    const novo = r || { id: 'GT-' + Math.random().toString(36).slice(2, 8).toUpperCase(), criado: new Date().toISOString(), registros: {}, exames: [], contatos: { avisados: 0, risco: 0 } };
     Object.assign(novo, {
       para, nome: $('#nome').value.trim(), email: $('#email').value.trim(), idade: Number($('#idade').value),
       sexo: $('#sexo').value, peso: Number($('#peso').value), altura: $('#altura').value ? Number($('#altura').value) : null,
@@ -684,7 +684,7 @@ function vMais(r) {
   <button class="full danger" id="apagar" style="margin-top:8px">🗑️ Apagar este rastreio</button>
 
   <h2>Sobre</h2>
-  <p class="sub">COVID Tracking · rastreio da gripe com foco em COVID-19. Não faz diagnóstico, não prescreve e não substitui avaliação médica. Em emergência, ligue 192.</p>
+  <p class="sub">Gripetracking · rastreio de síndrome gripal com foco em COVID-19. Não faz diagnóstico, não prescreve e não substitui avaliação médica. Em emergência, ligue 192.</p>
   <p class="sub">© 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. Proibidas a cópia, a redistribuição e o uso comercial sem autorização escrita da autora.</p>
   <p class="foot">Versão ${VERSAO_APP}</p>`;
   document.querySelectorAll('[data-at]').forEach(b => b.onclick = () => { DB.ativo = b.dataset.at; salvar(); ir('inicio'); });
@@ -699,8 +699,8 @@ function vMais(r) {
       DB.pesquisa = false; DB.pesquisaData = new Date().toISOString(); salvar(); render();
     } else vPesquisa('mais');
   };
-  $('#csv1').onclick = () => baixar(csvRegistros(r), 'covidtracking-registros-' + r.id + '.csv', 'text/csv');
-  $('#csv2').onclick = () => baixar(csvExames(r), 'covidtracking-exames-' + r.id + '.csv', 'text/csv');
+  $('#csv1').onclick = () => baixar(csvRegistros(r), 'gripetracking-registros-' + r.id + '.csv', 'text/csv');
+  $('#csv2').onclick = () => baixar(csvExames(r), 'gripetracking-exames-' + r.id + '.csv', 'text/csv');
   $('#enc').onclick = () => { if (r.encerrado) { delete r.encerrado; salvar(); ir('inicio'); } else encerrar(r); };
   $('#apagar').onclick = () => {
     if (!confirm('Apagar todos os dados de "' + r.nome + '"? Não dá para desfazer.')) return;
@@ -718,10 +718,10 @@ function convitePesquisa(r) {
 async function enviarPesquisa(r) {
   if (!DB.pesquisa) return toast('A autorização para pesquisa não foi dada.');
   if (!datasRegistradas(r).length) return toast('Faça pelo menos um registro antes de enviar.');
-  const assunto = 'COVID Tracking - dados de pesquisa - ' + r.id;
+  const assunto = 'Gripetracking - dados de pesquisa - ' + r.id;
   const corpo = 'Dados de pesquisa do rastreio ' + r.id + ' (termo v' + PESQUISA.versaoTermo + ', app v' + VERSAO_APP + ').';
-  const f1 = new File([csvRegistros(r)], 'covidtracking-' + r.id + '-registros.csv', { type: 'text/csv' });
-  const f2 = new File([csvExames(r)], 'covidtracking-' + r.id + '-exames.csv', { type: 'text/csv' });
+  const f1 = new File([csvRegistros(r)], 'gripetracking-' + r.id + '-registros.csv', { type: 'text/csv' });
+  const f2 = new File([csvExames(r)], 'gripetracking-' + r.id + '-exames.csv', { type: 'text/csv' });
   const marca = () => { r.pesquisaEnviado = new Date().toISOString(); salvar(); };
   modal(`<h3 style="margin-top:0">Enviar para a pesquisa</h3>
     <p>1. Toque em <b>Enviar</b> e escolha o <b>Gmail</b> ou outro app de e-mail.</p>
@@ -776,11 +776,11 @@ function icsLembretes(r) {
   const hoje = hojeISO().replace(/-/g, '');
   const d3 = somaDias(r.d0, 3) < hojeISO() ? null : somaDias(r.d0, 3).replace(/-/g, '');
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
-  const ev = (uid, dt, resumo, desc, rrule) => ['BEGIN:VEVENT', 'UID:' + uid + '@covidtracking', 'DTSTAMP:' + stamp, 'DTSTART:' + dt, 'DURATION:PT10M',
+  const ev = (uid, dt, resumo, desc, rrule) => ['BEGIN:VEVENT', 'UID:' + uid + '@gripetracking', 'DTSTAMP:' + stamp, 'DTSTART:' + dt, 'DURATION:PT10M',
     'SUMMARY:' + resumo, 'DESCRIPTION:' + desc, rrule || '', 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + resumo, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT'].filter(Boolean).join('\r\n');
-  const evs = [ev(r.id + '-diario', hoje + 'T' + h + m + '00', 'COVID Tracking: registro do dia', 'Abra o COVID Tracking e registre sintomas\\, respiração e condutas.', 'RRULE:FREQ=DAILY;COUNT=14')];
-  if (d3) evs.push(ev(r.id + '-teste', d3 + 'T090000', 'COVID Tracking: dia do autoteste', 'Janela ideal do autoteste de farmácia: D3 a D7.'));
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//COVID Tracking//PT-BR', 'CALSCALE:GREGORIAN', ...evs, 'END:VCALENDAR'].join('\r\n') + '\r\n';
+  const evs = [ev(r.id + '-diario', hoje + 'T' + h + m + '00', 'Gripetracking: registro do dia', 'Abra o Gripetracking e registre sintomas\\, respiração e condutas.', 'RRULE:FREQ=DAILY;COUNT=14')];
+  if (d3) evs.push(ev(r.id + '-teste', d3 + 'T090000', 'Gripetracking: dia do autoteste', 'Janela ideal do autoteste de farmácia: D3 a D7.'));
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Gripetracking//PT-BR', 'CALSCALE:GREGORIAN', ...evs, 'END:VCALENDAR'].join('\r\n') + '\r\n';
 }
 
 /* ================= início do app ================= */

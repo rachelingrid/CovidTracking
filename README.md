@@ -1,8 +1,8 @@
-# COVID Tracking
+# Gripetracking
 
-**Rastreio da gripe, dia a dia, com foco em COVID-19. Funciona offline no celular.**
+**Rastreio de síndrome gripal, dia a dia, com foco em COVID-19. Funciona offline no celular.**
 
-No início, a COVID-19 é muito parecida com uma gripe comum. Por isso, a qualquer sinal de gripe, principalmente forte ou com muita dor no corpo, a pessoa começa a registrar os sintomas. O nome *COVID Tracking* reflete o objetivo: juntar os sinais que apontam para COVID e para um quadro grave, e avisar a tempo de fazer o autoteste e de procurar o médico.
+No início, a COVID-19 é muito parecida com uma gripe comum. Por isso, a qualquer sinal de gripe, principalmente forte ou com muita dor no corpo, a pessoa começa a registrar os sintomas. O foco em COVID-19 reflete o objetivo: juntar os sinais que apontam para COVID e para um quadro grave, e avisar a tempo de fazer o autoteste e de procurar o médico.
 
 O paciente (ou o cuidador) registra os sintomas de cada dia, faz um teste simples de respiração e informa oxigênio e temperatura, se tiver os aparelhos. O app mostra se o quadro caminha para melhora ou piora, sinaliza quando procurar atendimento e gera um relatório em PDF para o médico, com a linha do tempo e as hipóteses a investigar.
 
@@ -44,7 +44,7 @@ Todos os dados ficam apenas no navegador do celular. Nada é enviado a servidore
 
 1. Envie todos os arquivos desta pasta para a raiz do repositório.
 2. No repositório: **Settings › Pages › Build and deployment › Source: Deploy from a branch**, branch `main`, pasta `/ (root)`.
-3. O endereço fica `https://<seu-usuario>.github.io/<nome-do-repositorio>/`.
+3. Endereço do app: **https://rachelingrid.github.io/Gripetracking/**
 4. Ao alterar qualquer arquivo, aumente a versão em `sw.js` (`VERSAO`) para os celulares baixarem a atualização.
 
 ## Estrutura

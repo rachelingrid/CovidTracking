@@ -1,6 +1,6 @@
-/* COVID Tracking — service worker: guarda o app no celular para funcionar sem internet.
+/* Gripetracking — service worker: guarda o app no celular para funcionar sem internet.
    © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. */
-const VERSAO = 'covidtracking-v1.1.0';
+const VERSAO = 'gripetracking-v1.2.0';
 const ARQUIVOS = [
   './', 'index.html', 'manifest.webmanifest', 'css/styles.css',
   'js/data.js', 'js/engine.js', 'js/ocr.js', 'js/report.js', 'js/app.js',

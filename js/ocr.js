@@ -1,4 +1,4 @@
-/* COVID Tracking — leitura de laudos no próprio celular (sem internet).
+/* Gripetracking — leitura de laudos no próprio celular (sem internet).
    Foto: Tesseract.js (português). PDF digital: pdf.js; PDF escaneado: pdf.js + Tesseract.
    © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. */
 'use strict';

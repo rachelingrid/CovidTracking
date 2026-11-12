@@ -1,7 +1,7 @@
 {
-  "name": "COVID Tracking",
-  "short_name": "COVID Tracking",
-  "description": "Rastreio evolutivo da COVID-19 no celular, offline.",
+  "name": "Gripetracking",
+  "short_name": "Gripetracking",
+  "description": "Rastreio de síndrome gripal com foco em COVID-19, offline.",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",

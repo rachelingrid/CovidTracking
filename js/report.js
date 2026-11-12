@@ -1,4 +1,4 @@
-/* COVID Tracking — relatório de encaminhamento em PDF, gerado no celular.
+/* Gripetracking — relatório de encaminhamento em PDF, gerado no celular.
    © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi. Todos os direitos reservados. */
 'use strict';
 
@@ -26,7 +26,7 @@ const Relatorio = (() => {
     function rodape() {
       doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(110);
       doc.text(limpa('Relatório gerado a partir de autorrelato. Não substitui avaliação clínica.'), M, 290);
-      doc.text(limpa('COVID Tracking · © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi'), M + W, 290, { align: 'right' });
+      doc.text(limpa('Gripetracking · © 2026 Rachel Ingrid Pereira da Rocha Jannuzzi'), M + W, 290, { align: 'right' });
     }
 
     const datas = datasRegistradas(r);
@@ -34,7 +34,7 @@ const Relatorio = (() => {
     const av = avaliarRegras(r, iso);
     const agora = new Date();
 
-    texto('COVID Tracking — Relatório de encaminhamento (rastreio de gripe com foco em COVID-19)', { b: true, s: 16 });
+    texto('Gripetracking — Relatório de encaminhamento (síndrome gripal com foco em COVID-19)', { b: true, s: 16 });
     texto('Gerado em ' + agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) +
       ' · referente a ' + dataBR(iso) + ' (' + rotuloDia(diaDoenca(r, iso)) + ')', { s: 9, c: [90, 90, 90] });
 
@@ -109,7 +109,7 @@ const Relatorio = (() => {
     const blob = doc.output('blob');
     const file = new File([blob], nome, { type: 'application/pdf' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'Relatório COVID Tracking' }); return 'compartilhado'; }
+      try { await navigator.share({ files: [file], title: 'Relatório Gripetracking' }); return 'compartilhado'; }
       catch (e) { if (e.name === 'AbortError') return 'cancelado'; }
     }
     const a = document.createElement('a');
